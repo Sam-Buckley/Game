@@ -39,7 +39,7 @@ fn setup_hero(
             ..Default::default()
         },
         Hero {
-            direction: Vec2::new(1.0, 0.0),
+            direction: Vec2::new(0.0, 0.0),
             veclocity: 500.0,
         },
     ));

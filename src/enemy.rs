@@ -30,12 +30,21 @@ fn spawn_enemies(
     mut commands: Commands,
     window_query: Query<&Window, With<PrimaryWindow>>,
     asset_server: Res<AssetServer>,
+    hero_query: Query<&Transform, With<Hero>>,
 ) {
     let window = window_query.get_single().unwrap();
     for _ in 0..enemy_count.0 {
         let x = random::<f32>() * window.width();
         let y = random::<f32>() * window.height();
         let mut transform = Transform::from_xyz(x, y, 0.0);
+        // Ensure the enemy is not spawned on top of the hero
+        for hero_transform in hero_query.iter() {
+            let distance = transform.translation.distance(hero_transform.translation);
+            if distance < 50.0 {
+                transform.translation.x += 100.0;
+                transform.translation.y += 100.0;
+            }
+        }
         transform.scale = Vec3::splat(0.3);
         commands.spawn((
             SpriteBundle {
