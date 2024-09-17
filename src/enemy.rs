@@ -99,16 +99,15 @@ fn enemy_bounds(
 }
 
 fn collision_detection(
-    mut commands: Commands,
-    mut hero_query: Query<(Entity, &Transform), With<Hero>>,
+    hero_query: Query<&Transform, With<Hero>>,
     enemy_query: Query<&Transform, With<Enemy>>,
     mut loss_event: EventWriter<LossEvent>,
 ) {
-    for (hero_entity, hero_transform) in hero_query.iter_mut() {
+    for hero_transform in hero_query.iter() {
         for enemy_transform in enemy_query.iter() {
             let distance = hero_transform.translation.distance(enemy_transform.translation);
             if distance < 50.0 {
-                commands.entity(hero_entity).despawn();
+
                 loss_event.send(LossEvent(true));
             }
         }

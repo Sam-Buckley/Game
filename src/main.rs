@@ -7,6 +7,7 @@ mod camera;
 mod background;
 mod enemy;
 mod loss;
+mod score;
 
 fn main() {
     App::new()
@@ -26,6 +27,9 @@ fn main() {
         .insert_resource(enemy::EnemyCount(7))
         .add_event::<LossEvent>()
         .add_systems(Update, quit_on_escape)
+        .insert_resource(score::Score(0))
+        .insert_resource(score::STimer(Timer::from_seconds(1.0, TimerMode::Repeating)))
+        .add_plugins(score::ScorePlugin)
         .run();
 }
 

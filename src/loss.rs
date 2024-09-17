@@ -24,8 +24,6 @@ fn loss_system(
         if event.0 {
             let window = window_query.get_single().unwrap();
             let mut transform = Transform::from_xyz(window.width() / 2.0, window.height() / 2.0, 1.0);
-            // Scale the loss sprite (660x371) to the window size
-            transform.scale = Vec3::splat(window.width() / 660.0);
             // Streth the loss sprite to the window size if needed
             transform.scale = Vec3::splat((window.height() / 371.0) + 0.15);
             commands.spawn(SpriteBundle {
