@@ -16,3 +16,4 @@ opt-level = 3
 bevy = { version = "0.14.2", features = ["dynamic_linking"] }
 rand = "0.8.5"
 winit = "0.30.5"
+bevy-inspector-egui = {git = "https://github.com/jakobhellermann/bevy-inspector-egui"}

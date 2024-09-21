@@ -18,7 +18,7 @@ impl Plugin for HeroPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_hero);
         app.add_systems(Update, hero_direction.run_if(holding_wasd));
-        app.add_systems(Update, hero_bounds);
+        app.add_systems(Update, hero_bounds.after(hero_movement));
         app.add_systems(Update, hero_movement);
         app.add_systems(Update, stop_movement.run_if(tapped_space));
     }
