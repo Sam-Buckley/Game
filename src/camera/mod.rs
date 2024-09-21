@@ -13,8 +13,14 @@ impl Plugin for CameraPlugin {
 fn camera(mut commands: Commands, window_query: Query<&Window, With<PrimaryWindow>>) {
     let window = window_query.get_single().unwrap();
     let (width, height) = (window.width(), window.height());
-    commands.spawn(Camera2dBundle {
-        transform: Transform::from_translation(Vec3::new(width / 2.0, height / 2.0, 10.0)),
-        ..Default::default()
-    });
+    commands.spawn((
+        Camera2dBundle {
+            transform: Transform::from_translation(Vec3::new(width / 2.0, height / 2.0, 10.0)),
+            ..Default::default()
+        },
+        Camera,
+    ));
 }
+
+#[derive(Component)]
+pub struct Camera;

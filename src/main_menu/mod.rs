@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 mod components;
 mod styles;
-mod systems;
+pub mod systems;
 use crate::states::AppState;
 
 pub struct MainMenuPlugin;

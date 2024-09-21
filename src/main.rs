@@ -2,6 +2,8 @@
 use bevy::window::PrimaryWindow;
 use bevy::{input::keyboard, prelude::*};
 
+mod player;
+
 mod main_menu;
 
 mod states;
@@ -16,9 +18,11 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugins(main_menu::MainMenuPlugin)
         .add_plugins(camera::CameraPlugin)
+        .add_plugins(player::PlayerPlugin)
         //
         // === Resources ===
         .insert_state(MainMenu)
+        .init_state::<DespawnedYet>()
         //
         // === Systems ===
         .add_systems(Startup, spawn_background)
@@ -30,12 +34,16 @@ fn switch_state(
     mut state: ResMut<NextState<AppState>>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     current_state: Res<State<AppState>>,
+    mut despawned: ResMut<NextState<DespawnedYet>>,
 ) {
     // Escape Toggles between MainMenu and InGame
     if keyboard_input.just_pressed(KeyCode::Escape) {
         match current_state.get() {
             MainMenu => state.set(InGame),
-            InGame => state.set(MainMenu),
+            InGame => {
+                despawned.set(DespawnedYet::Yes);
+                state.set(MainMenu);
+            }
             _ => {}
         }
     }
@@ -50,11 +58,19 @@ fn spawn_background(
     let window_width = window.width();
     let window_height = window.height();
     let transform =
-        Transform::from_translation(Vec3::new(window_width / 2.0, window_height / 2.0, 0.0))
+        Transform::from_translation(Vec3::new(window_width / 2.0, window_height / 2.0, -5.0))
             .with_scale(Vec3::splat(1.3));
     commands.spawn(SpriteBundle {
         texture: asset_server.load("sprites/Mountains.png"),
         transform,
         ..Default::default()
     });
+}
+
+#[derive(States, Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[repr(u8)]
+enum DespawnedYet {
+    #[default]
+    No,
+    Yes,
 }
