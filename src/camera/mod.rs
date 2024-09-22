@@ -15,7 +15,11 @@ fn camera(mut commands: Commands, window_query: Query<&Window, With<PrimaryWindo
     let (width, height) = (window.width(), window.height());
     commands.spawn((
         Camera2dBundle {
-            transform: Transform::from_translation(Vec3::new(width / 2.0, height / 2.0, 10.0)),
+            transform: Transform::from_translation(Vec3::new(
+                width / 2.0 + 150.0,
+                height / 2.0 + 150.0,
+                10.0,
+            )),
             ..Default::default()
         },
         Camera,

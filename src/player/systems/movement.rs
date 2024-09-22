@@ -5,6 +5,8 @@ use crate::camera::Camera;
 use crate::player::components::*;
 use crate::states::AppState::*;
 
+use crate::procedural_generation::map::*;
+
 pub struct PlayerMovementPlugin;
 
 impl Plugin for PlayerMovementPlugin {
@@ -19,15 +21,16 @@ fn setup(mut _commands: Commands) {
 
 fn movement_system(
     mut camera_query: Query<&mut Transform, (With<Camera>, Without<Player>)>,
-    mut player_query: Query<(&mut Transform, &PlayerStats), With<Player>>,
+    mut player_query: Query<(&mut Transform, &PlayerStats, &mut Sprite), With<Player>>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     window_query: Query<&Window, With<PrimaryWindow>>,
+    mut movement: ResMut<last_player_position>,
 ) {
     let window = window_query.get_single().unwrap();
     #[allow(unused_assignments)]
     let mut player_translation = Vec3::ZERO;
 
-    if let Ok((mut player_transform, player_stats)) = player_query.get_single_mut() {
+    if let Ok((mut player_transform, player_stats, mut sprite)) = player_query.get_single_mut() {
         let player_speed = player_stats.speed;
         player_translation = player_transform.translation;
 
@@ -39,10 +42,15 @@ fn movement_system(
         }
         if keyboard_input.pressed(KeyCode::KeyA) {
             player_translation.x -= player_speed;
+            // Turn the player to the left
+            sprite.flip_x = true;
         }
         if keyboard_input.pressed(KeyCode::KeyD) {
             player_translation.x += player_speed;
+            // Turn the player to the right
+            sprite.flip_x = false;
         }
+        // normalise player speed
 
         if let Ok(mut camera_transform) = camera_query.get_single_mut() {
             let (lower_x_bound, upper_x_bound, lower_y_bound, upper_y_bound) =
@@ -68,6 +76,10 @@ fn movement_system(
         }
 
         player_transform.translation = player_translation;
+        *movement = last_player_position {
+            x: player_translation.x,
+            y: player_translation.y,
+        };
     }
 }
 
